@@ -8,16 +8,17 @@
 // SHA-512, directory entries that run past their buffer.
 import std;
 import smb from "..";
-import entropy from "SorinS/entropygoose@v0.7.0";
-import net from "SorinS/netgoose@v0.7.0";
-import bignum from "SorinS/bigmongoose@v0.7.0";
-import asn1 from "SorinS/asn1goose@v0.7.0";
-import sys from "SorinS/osgoose@v0.7.0";
-import x509 from "SorinS/x509goose@v0.7.0";
-import ntlm from "SorinS/ntlmgoose@v0.7.0";
-import ldap from "SorinS/ldapgoose@v0.7.0";
-import krb5 from "SorinS/krb5goose@v0.7.0";
+import entropy from "SorinS/entropygoose@v0.9.1";
+import net from "SorinS/netgoose@v0.9.1";
+import bignum from "SorinS/bigmongoose@v0.9.1";
+import asn1 from "SorinS/asn1goose@v0.9.1";
+import x509 from "SorinS/x509goose@v0.9.1";
+import sys from "SorinS/osgoose@v0.9.1";
+import ntlm from "SorinS/ntlmgoose@v0.9.1";
+import ldap from "SorinS/ldapgoose@v0.9.1";
+import krb5 from "SorinS/krb5goose@v0.9.1";
 import smb.messages;
+import smb.client;
 
 var failures = 0;
 var checks = 0;
@@ -292,6 +293,23 @@ fn info_and_paths() {
           c.len == 64 + 57 && smb::get16(c, 64 + 46) == 0);
 }
 
+// A login with a credential that the final response calls a guest (or
+// null) session is refused: those flags come before any signature can be
+// checked, so a man in the middle could set them to drop signing. A
+// session with no credential may still be anonymous.
+fn guest_flag() {
+    var o = smb::options();
+    o.require_signing = false;
+    var c = smb::no_conn(o);
+    c.session_flags = smb::SESSION_FLAG_IS_GUEST;
+    let key: u8[16] = [1; 16];
+    let final: u8[64] = [0; 64];
+    check("a credential's login called a guest: refused", smb::finish_session(c, key, final) == smb::ERR_AUTH && !c.have_keys);
+    var a = smb::no_conn(o);
+    a.session_flags = smb::SESSION_FLAG_IS_NULL;
+    check("no credential: anonymous", smb::finish_session(a, "", final) == smb::OK && !a.have_keys);
+}
+
 fn main() {
     header_both_ways();
     negotiate_request();
@@ -300,6 +318,7 @@ fn main() {
     read_write();
     directories();
     info_and_paths();
+    guest_flag();
     print(checks, " checks, ", failures, " failures");
     if failures > 0 { exit(1); }
 }

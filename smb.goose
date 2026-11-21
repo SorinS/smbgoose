@@ -38,10 +38,10 @@
 namespace smb;
 
 import std;
-import net from "SorinS/netgoose@v0.7.0";
-import bignum from "SorinS/bigmongoose@v0.7.0";
-import ntlm from "SorinS/ntlmgoose@v0.7.0";
-import krb5 from "SorinS/krb5goose@v0.7.0";
+import net from "SorinS/netgoose@v0.9.1";
+import bignum from "SorinS/bigmongoose@v0.9.1";
+import ntlm from "SorinS/ntlmgoose@v0.9.1";
+import krb5 from "SorinS/krb5goose@v0.9.1";
 
 // --- Errors ---------------------------------------------------------------------------
 

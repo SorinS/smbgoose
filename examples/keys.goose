@@ -9,15 +9,15 @@
 
 import std;
 import smb from "..";
-import entropy from "SorinS/entropygoose@v0.7.0";
-import net from "SorinS/netgoose@v0.7.0";
-import bignum from "SorinS/bigmongoose@v0.7.0";
-import asn1 from "SorinS/asn1goose@v0.7.0";
-import sys from "SorinS/osgoose@v0.7.0";
-import x509 from "SorinS/x509goose@v0.7.0";
-import ntlm from "SorinS/ntlmgoose@v0.7.0";
-import ldap from "SorinS/ldapgoose@v0.7.0";
-import krb5 from "SorinS/krb5goose@v0.7.0";
+import entropy from "SorinS/entropygoose@v0.9.1";
+import net from "SorinS/netgoose@v0.9.1";
+import bignum from "SorinS/bigmongoose@v0.9.1";
+import asn1 from "SorinS/asn1goose@v0.9.1";
+import x509 from "SorinS/x509goose@v0.9.1";
+import sys from "SorinS/osgoose@v0.9.1";
+import ntlm from "SorinS/ntlmgoose@v0.9.1";
+import ldap from "SorinS/ldapgoose@v0.9.1";
+import krb5 from "SorinS/krb5goose@v0.9.1";
 import smb.crypto;
 
 fn unhex(s: const u8[:]) -> u8[>..] {
